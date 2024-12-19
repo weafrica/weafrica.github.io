@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}Blogs{% endblock %}
+
+{% block content %}
+    <h1>Blogs</h1>
+    <ul>
+        {% for blog in blogs %}
+            <li><strong>{{ blog.author }}</strong>: {{ blog.title }} - {{ blog.content }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

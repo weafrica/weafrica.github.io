@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}Activities{% endblock %}
+
+{% block content %}
+    <h1>Activities</h1>
+    <ul>
+        {% for activity in activities %}
+            <li><strong>{{ activity.name }}</strong>: {{ activity.description }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

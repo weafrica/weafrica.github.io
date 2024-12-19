@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}News{% endblock %}
+
+{% block content %}
+    <h1>News</h1>
+    <ul>
+        {% for article in articles %}
+            <li><strong>{{ article.title }}</strong>: {{ article.content }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
