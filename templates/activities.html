@@ -3,6 +3,7 @@
 {% block title %}Activities{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <h1>Activities</h1>
 <ul>
     {% for activity in activities %}
@@ -12,4 +13,12 @@
         </li>
     {% endfor %}
 </ul>
+=======
+    <h1>Activities</h1>
+    <ul>
+        {% for activity in activities %}
+            <li><strong>{{ activity.name }}</strong>: {{ activity.description }}</li>
+        {% endfor %}
+    </ul>
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
 {% endblock %}

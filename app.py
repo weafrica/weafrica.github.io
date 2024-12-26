@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, session, g, send_from_directory
 from datetime import timedelta
 import sqlite3
@@ -85,6 +86,32 @@ init_db()
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
+=======
+from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import timedelta
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+app.permanent_session_lifetime = timedelta(days=7)
+
+# Mock Data
+news_articles = [
+    {'title': 'News Article 1', 'content': 'Content of news article 1'},
+    {'title': 'News Article 2', 'content': 'Content of news article 2'}
+]
+
+blog_posts = [
+    {'author': 'Alice', 'title': 'Blog Post 1', 'content': 'Content of blog post 1'},
+    {'author': 'Bob', 'title': 'Blog Post 2', 'content': 'Content of blog post 2'}
+]
+
+activities = [
+    {'name': 'Activity 1', 'description': 'Description of activity 1'},
+    {'name': 'Activity 2', 'description': 'Description of activity 2'}
+]
+
+users = {}
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
 
 # Home route
 @app.route('/')
@@ -94,13 +121,19 @@ def home():
 # News section route
 @app.route('/news')
 def news():
+<<<<<<< HEAD
     news_articles = query_db('SELECT * FROM news')
+=======
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
     return render_template('news.html', articles=news_articles)
 
 # Blogs section route
 @app.route('/blogs')
 def blogs():
+<<<<<<< HEAD
     blog_posts = query_db('SELECT * FROM blogs')
+=======
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
     return render_template('blogs.html', blogs=blog_posts)
 
 # User registration route
@@ -109,10 +142,15 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+<<<<<<< HEAD
         existing_user = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
         if not existing_user:
             get_db().execute('INSERT INTO users (username, password) VALUES (?, ?)', [username, password])
             get_db().commit()
+=======
+        if username not in users:
+            users[username] = password
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
             session['user'] = username
             return redirect(url_for('home'))
     return render_template('register.html')
@@ -123,12 +161,17 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+<<<<<<< HEAD
         user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], one=True)
         if user:
+=======
+        if username in users and users[username] == password:
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
             session['user'] = username
             return redirect(url_for('home'))
     return render_template('login.html')
 
+<<<<<<< HEAD
 # User logout route
 @app.route('/logout')
 def logout():
@@ -140,12 +183,19 @@ def logout():
 def activities_view():
     activities_data = query_db('SELECT * FROM activities')
     return render_template('activities.html', activities=activities_data)
+=======
+# Activity listings route
+@app.route('/activities')
+def activities():
+    return render_template('activities.html', activities=activities)
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
 
 # E-commerce route
 @app.route('/shop')
 def shop():
     return render_template('shop.html')
 
+<<<<<<< HEAD
 # Games route
 @app.route('/games')
 def games_view():
@@ -162,5 +212,7 @@ def data_analyzer():
     return render_template('data_analyzer.html', data=data, average=average)
 
 # Run the app
+=======
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
 if __name__ == '__main__':
     app.run(debug=True)

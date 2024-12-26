@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
     <!-- Character encoding for the document -->
     <meta charset="UTF-8">
     <!-- Title of the document, which can be overridden in different templates -->
@@ -43,6 +44,35 @@
         <p>&copy; 2024 My Website</p>
     </footer>
     <!-- Link to the external JavaScript file -->
+=======
+    <meta charset="UTF-8">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('news') }}">News</a>
+            <a href="{{ url_for('blogs') }}">Blogs</a>
+            <a href="{{ url_for('activities') }}">Activities</a>
+            <a href="{{ url_for('shop') }}">Shop</a>
+            {% if 'user' in session %}
+                <p>Welcome, {{ session['user'] }}</p>
+                <a href="{{ url_for('home') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 My Website</p>
+    </footer>
+>>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
