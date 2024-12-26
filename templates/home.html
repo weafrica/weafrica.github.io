@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Declares the document type as HTML5 -->
+    <meta charset="UTF-8"> <!-- Specifies the character encoding for the document -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Sets the viewport to make the website responsive -->
+    <title>Home</title> <!-- Sets the title of the document that appears in the browser tab -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> <!-- Links to the external CSS stylesheet -->
+</head>
+<body>
+    <!-- Indicates that this template extends 'layout.html' -->
+    {% extends "layout.html" %}
+    <!-- Block content will be overridden by child templates -->
+    {% block content %}
+    
+    <!-- Container for the slideshow -->
+    <div class="slideshow-container">
+
+        <!-- Slide for Today's News -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/news.jpg') }}" alt="Today's News"> <!-- Image for the slide -->
+            <div class="text">Today's News</div> <!-- Text overlay on the slide -->
+        </div>
+
+        <!-- Slide for Blog -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/blogs.jpg') }}" alt="Blog"> <!-- Image for the slide -->
+            <div class="text">Blog</div> <!-- Text overlay on the slide -->
+        </div>
+
+        <!-- Slide for Extracurricular Activities -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/activities.jpg') }}" alt="Extracurricular Activities"> <!-- Image for the slide -->
+            <div class="text">Extracurricular Activities</div> <!-- Text overlay on the slide -->
+        </div>
+
+        <!-- Slide for Shop Online -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/shop.jpg') }}" alt="Shop Online - 24hrs Delivery"> <!-- Image for the slide -->
+            <div class="text">Shop Online - 24hrs Delivery</div> <!-- Text overlay on the slide -->
+        </div>
+
+        <!-- Slide for Online Games -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/games.jpg') }}" alt="Online Games"> <!-- Image for the slide -->
+            <div class="text">Online Games</div> <!-- Text overlay on the slide -->
+        </div>
+
+        <!-- Slide for Data Analyzing -->
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/data_analyzer.jpg') }}" alt="Data Analyzing"> <!-- Image for the slide -->
+            <div class="text">Data Analyzing</div> <!-- Text overlay on the slide -->
+        </div>
+
+    </div>
+
+    <!-- Indicators for the slideshow -->
+    <div style="text-align:center">
+        <!-- Dots for navigating the slides -->
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+        <span class="dot" onclick="currentSlide(6)"></span>
+    </div>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

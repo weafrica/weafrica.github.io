@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}News{% endblock %}
+
+{% block content %}
+<h1>News</h1>
+<ul>
+    {% for article in articles %}
+        <li>
+            <h2>{{ article.title }}</h2>
+            <p>{{ article.content }}</p>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
