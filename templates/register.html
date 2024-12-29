@@ -1,25 +1,33 @@
 {% extends "layout.html" %}
-
 {% block title %}Register{% endblock %}
-
 {% block content %}
-<<<<<<< HEAD
-<h1>Register</h1>
-<form method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password">
-    <button type="submit">Register</button>
-</form>
-=======
     <h1>Register</h1>
-    <form method="post" action="{{ url_for('register') }}">
+    <form action="{{ url_for('register') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="cellphone">Cellphone Number:</label>
+        <input type="text" id="cellphone" name="cellphone" required>
+        <label for="security_question">Security Question:</label>
+        <select id="security_question" name="security_question" required>
+            <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+            <option value="What is the name of your favorite childhood friend?">What is the name of your favorite childhood friend?</option>
+            <option value="What street did you live on in third grade?">What street did you live on in third grade?</option>
+            <option value="What is the middle name of your oldest sibling?">What is the middle name of your oldest sibling?</option>
+            <option value="What is the name of your first pet?">What is the name of your first pet?</option>
+            <option value="What was the first concert you attended?">What was the first concert you attended?</option>
+            <option value="What was your dream job as a child?">What was your dream job as a child?</option>
+            <option value="What is your favorite book?">What is your favorite book?</option>
+            <option value="What is the name of the street where you grew up?">What is the name of the street where you grew up?</option>
+            <option value="What was the make and model of your first car?">What was the make and model of your first car?</option>
+        </select>
+        <label for="security_answer">Answer:</label>
+        <input type="text" id="security_answer" name="security_answer" required>
         <button type="submit">Register</button>
     </form>
->>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
 {% endblock %}

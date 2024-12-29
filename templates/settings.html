@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+    <div class="settings">
+        <h1>Settings</h1>
+        <ul>
+            {% if 'user' in session %}
+                            <li class="nav-item">
+                                <form action="{{ url_for('logout') }}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link" style="color:blue;">Logout</button>
+                                </form>
+                            </li>
+            {% endif %}
+
+            <li><a href="{{ url_for('delete_account') }}">Delete Account</a></li>
+            <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+            <li><a href="{{ url_for('change_username') }}">Change Username</a></li>
+            <li><a href="{{ url_for('change_cellphone') }}">Change Cellphone Number</a></li>
+            <li><a href="{{ url_for('change_email') }}">Change Email</a></li>
+        </ul>
+    </div>
+{% endblock %}

@@ -3,11 +3,11 @@
 {% block title %}Data Analyzer{% endblock %}
 
 {% block content %}
-<h1>Data Analyzer</h1>
-<ul>
-    {% for item in data %}
-        <li>ID: {{ item.id }}, Value: {{ item.value }}</li>
-    {% endfor %}
-</ul>
-<p>Average Value: {{ average }}</p>
+    <h1>Data Analyzer</h1>
+    <ul>
+        {% for item in data %}
+            <li>ID: {{ item.id }}, Value: {{ item.value }}</li>
+        {% endfor %}
+    </ul>
+    <p>Average Value: {{ average }}</p>
 {% endblock %}

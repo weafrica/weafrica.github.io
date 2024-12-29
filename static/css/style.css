@@ -1,51 +1,74 @@
-/* Set default styles for the HTML and body elements */
-body, html {
-    margin: 0; /* Remove default margins */
-    padding: 0; /* Remove default padding */
-    height: 100%; /* Set height to 100% of the viewport */
-    overflow: hidden; /* Hide any overflow content */
-}
-
-/* Set the default font style for the body */
+/* Base styling for the entire document */
 body {
-    font-family: Arial, sans-serif; /* Use Arial as the default font */
+    font-family: 'Roboto', Arial, sans-serif; /* Use Roboto font, fallback to Arial, then sans-serif */
+    background-color: #000000;  /* Set background color to black */
+    color: #ffffff;  /* Set text color to white for better readability */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
 }
 
-/* Style the container for the slideshow */
-.slideshow-container {
-    position: relative; /* Position relative to enable absolute positioning of inner elements */
-    margin: auto; /* Center the container horizontally */
-    max-width: 1000px; /* Set a maximum width for the container */
+/* Styling for the header section */
+header {
+    background-color: #333; /* Dark gray background for header */
+    color: white; /* White text color */
+    padding: 10px 0; /* Vertical padding for spacing */
+    text-align: center; /* Center-align text */
 }
 
-/* Style each individual slide */
-.slide {
-    display: none; /* Hide slides by default */
+/* Styling for the navigation menu */
+nav ul {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center the items horizontally */
 }
 
-/* Style the text overlay on each slide */
-.text {
-    color: #fff; /* Set text color to white */
-    font-size: 20px; /* Set font size to 20px */
-    padding: 8px 12px; /* Add padding around the text */
-    position: absolute; /* Position the text absolutely within the slide */
-    bottom: 8px; /* Position the text 8px from the bottom of the slide */
-    width: 100%; /* Set the width to 100% of the slide */
-    text-align: center; /* Center the text horizontally */
+/* Styling for individual navigation items */
+nav ul li {
+    margin: 0 10px; /* Horizontal margin between items */
 }
 
-/* Style the navigation dots */
-.dot {
-    height: 15px; /* Set the height of the dots */
-    width: 15px; /* Set the width of the dots */
-    margin: 0 2px; /* Add a 2px margin to the left and right of each dot */
-    background-color: #bbb; /* Set the background color of the dots to light grey */
-    border-radius: 50%; /* Make the dots circular */
-    display: inline-block; /* Display dots inline */
-    transition: background-color 0.6s ease; /* Smoothly transition the background color */
+/* Styling for navigation links */
+nav ul li a {
+    color: white; /* White text color for links */
+    text-decoration: none; /* Remove underline from links */
+    padding: 5px 10px; /* Padding for clickable area */
+    border-radius: 5px; /* Rounded corners */
 }
 
-/* Style the active dot and add hover effect */
-.active, .dot:hover {
-    background-color: #717171; /* Set the background color of the active dot to dark grey */
+/* Hover effect for navigation links */
+nav ul li a:hover {
+    background-color: #555; /* Darker gray background on hover */
+}
+
+/* Styling for the main content area */
+main {
+    padding: 20px; /* Padding around the main content */
+}
+
+/* Styling for the footer section */
+footer {
+    background-color: #333; /* Dark gray background for footer */
+    color: white; /* White text color */
+    text-align: center; /* Center-align text */
+    padding: 10px 0; /* Vertical padding for spacing */
+    position: fixed; /* Fix the footer at the bottom of the page */
+    width: 100%; /* Make footer full width */
+    bottom: 0; /* Align footer to the bottom */
+}
+
+/* Styling for the settings section */
+.settings {
+    font-family: 'Roboto', sans-serif; /* Use Roboto font */
+    color: #ffffff; /* White text color */
+}
+
+/* Styling for buttons within forms */
+form button {
+    background: none; /* No background */
+    border: none; /* No border */
+    padding: 0; /* Remove padding */
+    color: blue; /* Blue text color */
+    cursor: pointer; /* Pointer cursor on hover */
 }

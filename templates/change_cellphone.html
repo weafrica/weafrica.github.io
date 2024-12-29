@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block title %}Change Cellphone Number{% endblock %}
+{% block content %}
+    <h1>Change Cellphone Number</h1>
+    <form action="{{ url_for('change_cellphone') }}" method="post">
+        <label for="new_cellphone">New Cellphone Number:</label>
+        <input type="text" id="new_cellphone" name="new_cellphone" required>
+        <button type="submit">Change Cellphone Number</button>
+    </form>
+{% endblock %}

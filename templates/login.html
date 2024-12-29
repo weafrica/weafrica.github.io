@@ -1,25 +1,13 @@
 {% extends "layout.html" %}
-
 {% block title %}Login{% endblock %}
-
 {% block content %}
-<<<<<<< HEAD
-<h1>Login</h1>
-<form method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password">
-    <button type="submit">Login</button>
-</form>
-=======
     <h1>Login</h1>
-    <form method="post" action="{{ url_for('login') }}">
+    <form action="{{ url_for('login') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <button type="submit">Login</button>
     </form>
->>>>>>> e300b12dd3ca1eef619dd786afa1b78512a9a3a1
+    <p><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
 {% endblock %}
