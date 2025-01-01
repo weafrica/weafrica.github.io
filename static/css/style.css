@@ -1,51 +1,47 @@
-/* Set default styles for the HTML and body elements */
-body, html {
-    margin: 0; /* Remove default margins */
-    padding: 0; /* Remove default padding */
-    height: 100%; /* Set height to 100% of the viewport */
-    overflow: hidden; /* Hide any overflow content */
-}
-
-/* Set the default font style for the body */
 body {
-    font-family: Arial, sans-serif; /* Use Arial as the default font */
+    padding-top: 56px;
+    background-color: #121212;
+    color: #ffffff;
 }
 
-/* Style the container for the slideshow */
-.slideshow-container {
-    position: relative; /* Position relative to enable absolute positioning of inner elements */
-    margin: auto; /* Center the container horizontally */
-    max-width: 1000px; /* Set a maximum width for the container */
+.navbar {
+    background-color: #1f1f1f;
 }
 
-/* Style each individual slide */
-.slide {
-    display: none; /* Hide slides by default */
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
 }
 
-/* Style the text overlay on each slide */
-.text {
-    color: #fff; /* Set text color to white */
-    font-size: 20px; /* Set font size to 20px */
-    padding: 8px 12px; /* Add padding around the text */
-    position: absolute; /* Position the text absolutely within the slide */
-    bottom: 8px; /* Position the text 8px from the bottom of the slide */
-    width: 100%; /* Set the width to 100% of the slide */
-    text-align: center; /* Center the text horizontally */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Style the navigation dots */
-.dot {
-    height: 15px; /* Set the height of the dots */
-    width: 15px; /* Set the width of the dots */
-    margin: 0 2px; /* Add a 2px margin to the left and right of each dot */
-    background-color: #bbb; /* Set the background color of the dots to light grey */
-    border-radius: 50%; /* Make the dots circular */
-    display: inline-block; /* Display dots inline */
-    transition: background-color 0.6s ease; /* Smoothly transition the background color */
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
-/* Style the active dot and add hover effect */
-.active, .dot:hover {
-    background-color: #717171; /* Set the background color of the active dot to dark grey */
+.card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+}
+
+.card-title, .card-text {
+    color: #ffffff;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #1f1f1f;
+    text-align: center;
+    line-height: 50px;
+    color: #ffffff;
+}
+
+.jumbotron {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 1px solid #333;
 }

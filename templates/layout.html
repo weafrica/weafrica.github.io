@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Character encoding for the document -->
     <meta charset="UTF-8">
-    <!-- Title of the document, which can be overridden in different templates -->
-    <title>{% block title %}My Website{% endblock %}</title>
-    <!-- Link to the external CSS stylesheet -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Final Project</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <!-- Header section containing the navigation bar and user section -->
-    <header>
-        <nav>
-            <!-- Navigation links to different sections of the website -->
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('news') }}">News</a>
-            <a href="{{ url_for('blogs') }}">Blogs</a>
-            <a href="{{ url_for('activities_view') }}">Activities</a>
-            <a href="{{ url_for('shop') }}">Shop</a>
-            <a href="{{ url_for('games_view') }}">Games</a>
-            <a href="{{ url_for('data_analyzer') }}">Data Analyzer</a>
-        </nav>
-        <div class="user-section">
-            <!-- Check if user is logged in -->
-            {% if 'user' in session %}
-                <!-- Display a welcome message and logout link if user is logged in -->
-                <p>Welcome, {{ session['user'] }}</p>
-                <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
-            {% else %}
-                <!-- Display registration and login links if user is not logged in -->
-                <a href="{{ url_for('register') }}">Register</a>
-                <a href="{{ url_for('login') }}">Login</a>
-            {% endif %}
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Final Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('news_list') }}">News</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('shop') }}">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('data_analyzer') }}">Data Analyzer</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('game') }}">Game</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('recreational_activities') }}">Recreational Activities</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('blogs') }}">Blogs</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if 'username' in session %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('settings') }}">Settings</a></li>
+                    <li class="nav-item">
+                        <form action="{{ url_for('logout') }}" method="post" class="form-inline">
+                            <button type="submit" class="btn btn-link nav-link">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
         </div>
-    </header>
-    <!-- Main content area, which can be overridden in different templates -->
-    <main>
+    </nav>
+    <div class="container">
         {% block content %}{% endblock %}
-    </main>
-    <!-- Footer section -->
-    <footer>
-        <p>&copy; 2024 My Website</p>
-    </footer>
-    <!-- Link to the external JavaScript file -->
+    </div>
+    <div class="footer">
+        &copy; 2024 Final Project
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

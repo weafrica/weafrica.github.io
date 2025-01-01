@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Settings</h2>
+    <p>Manage your account settings here.</p>
+    <ul>
+        <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+        <li><a href="{{ url_for('change_username') }}">Change Username</a></li>
+        <li><a href="{{ url_for('change_cellphone') }}">Change Cellphone Number</a></li>
+        <li><a href="{{ url_for('change_email') }}">Change Email</a></li>
+    </ul>
+</div>
+{% endblock %}

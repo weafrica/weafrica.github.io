@@ -1,14 +1,76 @@
 {% extends "layout.html" %}
-
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h1>Register</h1>
-<form method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password">
-    <button type="submit">Register</button>
-</form>
+<div class="container mt-4">
+    <h2>Register</h2>
+    {% with messages = get_flashed_messages(category_filter=["register_error"]) %}
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <form method="post">
+        <div class="row mb-3">
+            <label for="username" class="col-sm-2 col-form-label">Username:</label>
+            <div class="col-sm-10">
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="password" class="col-sm-2 col-form-label">Password:</label>
+            <div class="col-sm-10">
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="confirm_password" class="col-sm-2 col-form-label">Confirm Password:</label>
+            <div class="col-sm-10">
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Email:</label>
+            <div class="col-sm-10">
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="security_question" class="col-sm-2 col-form-label">Security Question:</label>
+            <div class="col-sm-10">
+                <select id="security_question" name="security_question" class="form-control" required>
+                    <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                    <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+                    <option value="What was the name of your elementary school?">What was the name of your elementary school?</option>
+                    <option value="What is your favorite book?">What is your favorite book?</option>
+                    <option value="What is your favorite movie?">What is your favorite movie?</option>
+                    <option value="What is your favorite color?">What is your favorite color?</option>
+                    <option value="What is your father's middle name?">What is your father's middle name?</option>
+                    <option value="What was the name of your first teacher?">What was the name of your first teacher?</option>
+                    <option value="What was the name of your first car?">What was the name of your first car?</option>
+                    <option value="What is your favorite food?">What is your favorite food?</option>
+                    <option value="What city were you born in?">What city were you born in?</option>
+                    <option value="What is your favorite sport?">What is your favorite sport?</option>
+                    <option value="What is your favorite hobby?">What is your favorite hobby?</option>
+                    <option value="What is your favorite animal?">What is your favorite animal?</option>
+                    <option value="What is your favorite vacation destination?">What is your favorite vacation destination?</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="security_answer" class="col-sm-2 col-form-label">Answer:</label>
+            <div class="col-sm-10">
+                <input type="text" id="security_answer" name="security_answer" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}
