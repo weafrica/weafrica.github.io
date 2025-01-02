@@ -1,0 +1,14 @@
+move all the script and style to static
+move the nav to the rightside of the page, going down, top to bottom
+add Search Bar, Notifications and Alerts to the side bar
+remove register link from the header
+change side bar background to a darker colour
+only show the notification textbox after the user pressed the notification
+replace a notification button with a link and remove a lable
+on the side bar, replace profile picture with a human shade icon
+add an african hut icon with colour on WeAfrica
+don't trust the user by adding more error messages during registration
+after registering redirect user to login page
+If the user has been registered inform the user
+during registration save the profile picture by creating a column under the user table
+remove the umane shade with a profile picture or profile picture icon

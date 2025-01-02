@@ -3,7 +3,7 @@ from datetime import timedelta
 import sqlite3
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, NotFound, InternalServerError
 import os
 from functools import wraps
 import news
@@ -42,14 +42,14 @@ def login_required(f):
     return decorated_function
 
 @app.errorhandler(HTTPException)
-def handle_exception(e):
+def handle_http_exception(e):
     # Handle HTTP exceptions
-    return render_template('apology.html', error_message=str(e)), e.code
+    return render_template('apology.html', error_message=str(e), error_code=e.code), e.code
 
 @app.errorhandler(Exception)
 def handle_exception(e):
     # Handle non-HTTP exceptions only
-    return render_template('apology.html', error_message=str(e)), 500
+    return render_template('apology.html', error_message=str(e), error_code=500), 500
 
 @app.route('/', endpoint='index')
 def index():
@@ -90,23 +90,54 @@ def register():
         email = request.form['email']
         security_question = request.form['security_question']
         security_answer = request.form['security_answer']
+        profile_picture = request.files['profile_picture']
         
-        # Check if password and confirm password match
+        # Validate the input
+        errors = []
+        if not username:
+            errors.append("Username is required.")
+        if not password:
+            errors.append("Password is required.")
         if password != confirm_password:
-            flash('Passwords do not match. Please try again.', 'register_error')
+            errors.append("Passwords do not match.")
+        if not email:
+            errors.append("Email is required.")
+        if not security_question:
+            errors.append("Security question is required.")
+        if not security_answer:
+            errors.append("Security answer is required.")
+        if profile_picture and not profile_picture.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            errors.append("Invalid profile picture format. Only PNG, JPG, JPEG, and GIF are allowed.")
+        
+        # Check if username or email already exists
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = ? OR email = ?", (username, email))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            errors.append("Username or email already exists.")
+        
+        if errors:
+            for error in errors:
+                flash(error, 'register_error')
             return render_template('register.html')
         
         # Hash the password and security answer
         hashed_password = generate_password_hash(password)
         hashed_security_answer = generate_password_hash(security_answer)
         
+        # Save the profile picture if provided
+        profile_picture_filename = None
+        if profile_picture:
+            profile_picture_filename = secure_filename(profile_picture.filename)
+            profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename))
+        
         # Save the user information in the database
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("INSERT INTO users (username, password, email, security_question, security_answer) VALUES (?, ?, ?, ?, ?)",
-                       (username, hashed_password, email, security_question, hashed_security_answer))
+        cursor.execute("INSERT INTO users (username, password, email, security_question, security_answer, profile_picture) VALUES (?, ?, ?, ?, ?, ?)",
+                       (username, hashed_password, email, security_question, hashed_security_answer, profile_picture_filename))
         db.commit()
         
+        flash('Registration successful. Please log in.', 'register_success')
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -247,6 +278,12 @@ def recreational_activities():
 def blogs():
     # Render the blogs.html template
     return render_template('blogs.html')
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query')
+    # Add logic to handle the search query
+    return render_template('search_results.html', query=query)
 
 # Set session lifetime to 7 days
 app.permanent_session_lifetime = timedelta(days=7)

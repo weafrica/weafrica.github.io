@@ -1,47 +1,27 @@
 body {
-    padding-top: 56px;
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* Light text color for readability */
+    padding-top: 56px; /* Adjust for fixed header */
 }
-
-.navbar {
-    background-color: #1f1f1f;
+.content {
+    padding: 20px;
 }
-
-.navbar-brand, .nav-link {
-    color: #ffffff !important;
+.sidebar {
+    height: 100vh;
+    padding-top: 20px;
+    background-color: #343a40; /* Match the sidebar background color with the body */
+    color: #ffffff; /* Ensure text color is light */
 }
-
-.navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.1);
+.sidebar .nav-link {
+    color: #ffffff; /* Ensure nav links are visible */
 }
-
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+.sidebar .nav-link:hover {
+    background-color: #495057; /* Slightly lighter color on hover */
 }
-
-.card {
-    background-color: #1f1f1f;
-    border: 1px solid #333;
-}
-
-.card-title, .card-text {
-    color: #ffffff;
-}
-
 .footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 50px;
-    background-color: #1f1f1f;
-    text-align: center;
-    line-height: 50px;
-    color: #ffffff;
-}
-
-.jumbotron {
-    background-color: #1f1f1f;
-    color: #ffffff;
-    border: 1px solid #333;
+    background-color: #343a40; /* Match the footer background color with the body */
+    color: #ffffff; /* Ensure text color is light */
 }
