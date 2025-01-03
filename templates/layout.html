@@ -11,7 +11,7 @@
 <body>
     <header class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top custom-header">
         <a class="navbar-brand" href="{{ url_for('index') }}">
-            <i class="fas fa-home" style="color: #FFD700;"></i> <!-- Example icon, replace with African hut icon if available -->
+            <i class="fas fa-home" id="weafrica-icon"></i> <!-- Example icon, replace with African hut icon if available -->
             WeAfrica
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,9 +20,14 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('news_list') }}">News</a></li>
+                {% if request.endpoint == 'news_list' or request.endpoint == 'add_news' %}
+                    {% if 'username' in session %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_news') }}">Add News</a></li>
+                    {% endif %}
+                {% endif %}
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('shop') }}">Shop</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('data_analyzer') }}">Data Analyzer</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('game') }}">Game</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('game') }}" id="game-link">Game</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('recreational_activities') }}">Recreational Activities</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('blogs') }}">Blogs</a></li>
                 {% if 'username' in session %}
@@ -43,7 +48,7 @@
             <div class="col-md-2 sidebar">
                 <!-- Sidebar content -->
                 <div class="user-profile text-center my-3">
-                    {% if session.get('profile_picture') %}
+                    {% if 'username' in session and session.get('profile_picture') %}
                         <img src="{{ url_for('static', filename='uploads/' ~ session.get('profile_picture')) }}" alt="Profile Picture" class="img-fluid rounded-circle mb-2" style="width: 100px; height: 100px;">
                     {% else %}
                         <i class="fas fa-user-circle fa-5x mb-2"></i>
@@ -75,10 +80,26 @@
                         <form action="{{ url_for('logout') }}" method="post" class="form-inline">
                             <button type="submit" class="btn btn-link nav-link">Logout</button>
                         </form>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                     {% endif %}
                 </nav>
             </div>
             <div class="col-md-10 content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="alert-container mt-4">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
                 {% block content %}{% endblock %}
             </div>
         </div>
@@ -90,16 +111,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script>
-        document.getElementById('showNotificationsLink').addEventListener('click', function(event) {
-            event.preventDefault();
-            var notificationsBox = document.getElementById('notificationsBox');
-            if (notificationsBox.style.display === 'none') {
-                notificationsBox.style.display = 'block';
-            } else {
-                notificationsBox.style.display = 'none';
-            }
-        });
-    </script>
 </body>
 </html>

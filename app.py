@@ -32,6 +32,12 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Allowed extensions for image upload
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 # Decorator to require login for certain routes
 def login_required(f):
     @wraps(f)
@@ -66,10 +72,12 @@ def login():
         # Validate the username and password with the database
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
+        cursor.execute("SELECT password, profile_picture FROM users WHERE username = ?", (username,))
         user = cursor.fetchone()
         if user and check_password_hash(user[0], password):
             session['username'] = username
+            session['profile_picture'] = user[1]
+            print(f"Session data: {session}")  # Debug print
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password. Please try again.', 'login_error')
@@ -177,34 +185,37 @@ def forgot_password():
                 flash('Incorrect security answer. Please try again.', 'forgot_password_error')
     return render_template('forgot_password.html')
 
+@app.route('/news_list')
+def news_list():
+    # Render the news_list.html template
+    return render_template('news_list.html')
+
 @app.route('/add_news', methods=['GET', 'POST'])
-@login_required
 def add_news():
+    if 'username' not in session:
+        flash('You need to be logged in to add news.', 'warning')
+        return redirect(url_for('login'))
+    
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
         body = request.form['body']
         image = request.files['image']
-        author = session['username']
         
-        if not title or not description or not body:
-            return 'Missing data', 400
-        
-        if image:
+        if image and allowed_file(image.filename):
             filename = secure_filename(image.filename)
             image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_url = url_for('static', filename=f'uploads/{filename}')
         else:
-            image_url = None
+            filename = None
         
-        news.add_article(title, description, body, image_url, author)
+        # Add logic to save the news article along with the image filename
+        # Assuming you have a function to save the article in the database
+        news.save_article(title, description, body, filename)
+        
+        flash('News article added successfully!', 'success')
         return redirect(url_for('news_list'))
+    
     return render_template('add_news.html')
-
-@app.route('/news')
-def news_list():
-    articles = news.get_all_articles()
-    return render_template('news_list.html', articles=articles)
 
 @app.route('/shop')
 def shop():

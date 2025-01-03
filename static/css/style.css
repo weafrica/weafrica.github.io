@@ -25,3 +25,32 @@ body {
     background-color: #343a40; /* Match the footer background color with the body */
     color: #ffffff; /* Ensure text color is light */
 }
+.darker-background {
+    background-color: #333; /* Darker background color */
+    color: #fff; /* White text color for contrast */
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    padding: 20px; /* Add some padding */
+}
+
+.darker-background-1 {
+    background-color: #333; /* Darker background color */
+    color: #fff; /* White text color for contrast */
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    padding: 20px; /* Add some padding */
+}
+
+.darker-background-2 {
+    background-color: #444; /* Slightly different darker background color */
+    color: #fff; /* White text color for contrast */
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    padding: 20px; /* Add some padding */
+}
+
+.darker-background-3 {
+    background-color: #555; /* Another different darker background color */
+    color: #fff; /* White text color for contrast */
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    padding: 20px; /* Add some padding */
+}
+
+/* Add more classes as needed */

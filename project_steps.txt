@@ -12,3 +12,17 @@ after registering redirect user to login page
 If the user has been registered inform the user
 during registration save the profile picture by creating a column under the user table
 remove the umane shade with a profile picture or profile picture icon
+make the homepage have a darker back ground
+make all the pages have different daker background
+remove the human icon on the side bar and replace it with a profile picture
+the profile picture of the user is not showing on the side bar
+replace the profile picture words with profile picuter icon
+if login show profile picture not Font Awesome
+remove logout and settings from the header
+change the colour of WeAfrica icon every time the page refreshes to rundom colours
+make the game words change colour every time the page refreshes
+move all the script to static js
+If the user pressed the news page show the add news page
+If the user press news show the add news page on the header
+users can only add news after they have log in. also add this message
+
