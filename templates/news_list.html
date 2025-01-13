@@ -2,30 +2,32 @@
 {% block title %}News List{% endblock %}
 
 {% block content %}
-<div class="container darker-background-2">
-    <h1>News List</h1>
-    <p>This is the news list page with a different darker background.</p>
-    <!-- Add more content as needed -->
-    <div class="container mt-4">
-        <h2>News List</h2>
-        {% for article in articles %}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h3 class="card-title">{{ article.title }}</h3>
-                    <div class="row">
-                        {% if article.image_url %}
-                            <div class="col-md-4">
-                                <img src="{{ article.image_url }}" class="img-fluid" alt="{{ article.title }}" style="max-width: 100%; height: auto;">
-                            </div>
-                        {% endif %}
-                        <div class="col-md-8">
-                            <p class="card-text"><strong>Description:</strong> {{ article.description }}</p>
+<div class="container darker-background-2 mt-4">
+    {% for article in articles %}
+        <div class="card mb-4 bg-dark text-white">
+            <div class="card-body">
+                <h3 class="card-title">{{ article.title }}</h3>
+                <h6 class="card-subtitle mb-2 text-muted">By {{ article.author }}</h6>
+                <div class="row">
+                    {% if article.image %}
+                        <div class="col-md-4">
+                            <img src="{{ url_for('static', filename='uploads/' ~ article.image) }}" class="img-fluid" alt="{{ article.title }}" style="max-width: 100%; height: auto;">
+                        </div>
+                    {% endif %}
+                    <div class="col-md-8">
+                        <p class="card-text"><strong>Description:</strong> {{ article.description }}</p>
+                        <a href="#" class="read-more-link" data-article-id="{{ loop.index }}">Read More</a>
+                        <div class="article-body" id="article-body-{{ loop.index }}" style="display: none;">
                             <p class="card-text">{{ article.body }}</p>
                         </div>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/news_list.js') }}"></script>
 {% endblock %}

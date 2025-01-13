@@ -4,10 +4,9 @@ from flask import g
 DATABASE = 'final_project.db'
 
 def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
+    conn = sqlite3.connect('final_project.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 def init_db():
     with app.app_context():
@@ -16,20 +15,22 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-def add_article(title, description, body, image_url, author):
+def save_article(title, description, body, image_filename, author):
     db = get_db()
     cursor = db.cursor()
     cursor.execute(
-        "INSERT INTO articles (title, description, body, image_url, author) VALUES (?, ?, ?, ?, ?)",
-        (title, description, body, image_url, author)
+        "INSERT INTO articles (title, description, body, image, author) VALUES (?, ?, ?, ?, ?)",
+        (title, description, body, image_filename, author)
     )
     db.commit()
+    db.close()
 
 def get_all_articles():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT title, description, body, image_url FROM articles")
+    cursor.execute("SELECT title, description, body, image, author FROM articles")
     articles = cursor.fetchall()
+    db.close()
     return articles
 
 def close_connection(exception):

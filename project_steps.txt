@@ -25,4 +25,6 @@ move all the script to static js
 If the user pressed the news page show the add news page
 If the user press news show the add news page on the header
 users can only add news after they have log in. also add this message
-
+Update the news_list route to fetch the articles from the database and pass them to the template
+remove the news list words and only show the article. also use a darker background
+make all the news a link, that only shows title, image and description. then only show the body of the news after the link has been clicked. make use of readmore

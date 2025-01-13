@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import HTTPException, NotFound, InternalServerError
 import os
 from functools import wraps
-import news
+import news  # Import the news module
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -20,17 +20,9 @@ app.permanent_session_lifetime = timedelta(days=7)
 # Database file path
 DATABASE = 'final_project.db'
 
-# Function to get a database connection
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-# Ensure the upload folder exists
+# Upload folder
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Allowed extensions for image upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -38,12 +30,17 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Decorator to require login for certain routes
+def get_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'username' not in session:
-            return redirect(url_for('login'))
+            flash('You need to be logged in to access this page.', 'warning')
+            return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -60,9 +57,39 @@ def handle_exception(e):
 @app.route('/', endpoint='index')
 def index():
     # Retrieve the username from the session
-    username = session.get('username', 'Guest')
-    # Render the index.html template with the username
+    username = session.get('username')
     return render_template('index.html', username=username)
+
+@app.route('/news_list')
+def news_list():
+    # Fetch all articles from the database
+    articles = news.get_all_articles()
+    # Render the news_list.html template with the articles
+    return render_template('news_list.html', articles=articles)
+
+@app.route('/add_news', methods=['GET', 'POST'])
+@login_required
+def add_news():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        body = request.form['body']
+        image = request.files['image']
+        author = session.get('username')  # Get the author from the session
+        
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            filename = None
+        
+        # Save the article in the database using the news module
+        news.save_article(title, description, body, filename, author)
+        
+        flash('News article added successfully!', 'success')
+        return redirect(url_for('news_list'))
+    
+    return render_template('add_news.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -184,38 +211,6 @@ def forgot_password():
             else:
                 flash('Incorrect security answer. Please try again.', 'forgot_password_error')
     return render_template('forgot_password.html')
-
-@app.route('/news_list')
-def news_list():
-    # Render the news_list.html template
-    return render_template('news_list.html')
-
-@app.route('/add_news', methods=['GET', 'POST'])
-def add_news():
-    if 'username' not in session:
-        flash('You need to be logged in to add news.', 'warning')
-        return redirect(url_for('login'))
-    
-    if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
-        body = request.form['body']
-        image = request.files['image']
-        
-        if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        else:
-            filename = None
-        
-        # Add logic to save the news article along with the image filename
-        # Assuming you have a function to save the article in the database
-        news.save_article(title, description, body, filename)
-        
-        flash('News article added successfully!', 'success')
-        return redirect(url_for('news_list'))
-    
-    return render_template('add_news.html')
 
 @app.route('/shop')
 def shop():
