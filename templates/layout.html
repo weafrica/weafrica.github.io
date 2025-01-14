@@ -18,98 +18,110 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('news_list') }}">News</a></li>
-                {% if request.endpoint == 'news_list' or request.endpoint == 'add_news' %}
-                    {% if 'username' in session %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_news') }}">Add News</a></li>
-                    {% endif %}
-                {% endif %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('shop') }}">Shop</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('data_analyzer') }}">Data Analyzer</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('game') }}" id="game-link">Game</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('recreational_activities') }}">Recreational Activities</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('blogs') }}">Blogs</a></li>
-                {% if 'username' in session %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('settings') }}">Settings</a></li>
-                    <li class="nav-item">
-                        <form action="{{ url_for('logout') }}" method="post" class="form-inline">
-                            <button type="submit" class="btn btn-link nav-link">Logout</button>
-                        </form>
-                    </li>
-                {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
-                {% endif %}
-            </ul>
+            <form class="form-inline ml-auto" action="{{ url_for('search') }}" method="get">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            {% if 'username' in session %}
+                <div class="navbar-nav ml-auto d-flex align-items-center">
+                    <a class="nav-link d-flex align-items-center" href="{{ url_for('profile') }}">
+                        <div class="profile-picture-shade">
+                            <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ session['profile_picture']) }}" class="rounded-circle" alt="Profile Picture" style="width: 40px; height: 40px;">
+                        </div>
+                        <span class="ml-2">{{ session['username'] }}</span>
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </header>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 sidebar">
-                <!-- Sidebar content -->
-                <div class="user-profile text-center my-3">
-                    {% if 'username' in session and session.get('profile_picture') %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ session.get('profile_picture')) }}" alt="Profile Picture" class="img-fluid rounded-circle mb-2" style="width: 100px; height: 100px;">
-                    {% else %}
-                        <i class="fas fa-user-circle fa-5x mb-2"></i>
-                    {% endif %}
-                    <h5>{{ session.get('username', 'Guest') }}</h5>
-                    <p>{{ session.get('email', 'guest@example.com') }}</p>
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('index') }}">
+                                <i class="fas fa-home"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('news.news_list') }}">
+                                <i class="fas fa-newspaper"></i>
+                                News
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('shop.shop_list') }}">
+                                <i class="fas fa-shopping-cart"></i>
+                                Shop
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('data_analyzer.data_analyzer_list') }}">
+                                <i class="fas fa-chart-line"></i>
+                                Data Analyzer
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('game.game_list') }}">
+                                <i class="fas fa-gamepad"></i>
+                                Game
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('recreational_activities.recreational_activities_list') }}">
+                                <i class="fas fa-futbol"></i>
+                                Recreational Activities
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('blogs.blogs_list') }}">
+                                <i class="fas fa-blog"></i>
+                                Blogs
+                            </a>
+                        </li>
+                        {% if 'username' in session %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('settings') }}">
+                                    <i class="fas fa-cog"></i>
+                                    Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('profile') }}">
+                                    <i class="fas fa-user-circle"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form action="{{ url_for('logout') }}" method="post" class="form-inline">
+                                    <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('login') }}">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
-                <div class="search-bar my-3">
-                    <form action="{{ url_for('search') }}" method="get">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="query" placeholder="Search...">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Go</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="notifications my-3">
-                    <a href="#" class="nav-link" id="showNotificationsLink">Notifications</a>
-                    <div id="notificationsBox" class="mt-3" style="display: none;">
-                        <ul class="list-group">
-                            <li class="list-group-item">No new notifications</li>
-                        </ul>
-                    </div>
-                </div>
-                <nav class="nav flex-column">
-                    {% if 'username' in session %}
-                        <a class="nav-link" href="{{ url_for('settings') }}">Settings</a>
-                        <form action="{{ url_for('logout') }}" method="post" class="form-inline">
-                            <button type="submit" class="btn btn-link nav-link">Logout</button>
-                        </form>
-                    {% else %}
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    {% endif %}
-                </nav>
-            </div>
-            <div class="col-md-10 content">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="alert-container mt-4">
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endwith %}
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 {% block content %}{% endblock %}
-            </div>
+            </main>
         </div>
     </div>
-    <footer class="footer bg-dark text-white text-center py-3">
-        &copy; 2024 WeAfrica
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container">
+            <span class="text-muted">&copy; 2023 WeAfrica. All rights reserved.</span>
+        </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

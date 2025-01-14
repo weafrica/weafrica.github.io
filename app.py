@@ -6,13 +6,40 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import HTTPException, NotFound, InternalServerError
 import os
 from functools import wraps
-import news  # Import the news module
+from news import news_bp  # Import the news blueprint
+from shop import shop_bp  # Import the shop blueprint
+from data_analyzer import data_analyzer_bp  # Import the data_analyzer blueprint
+from game import game_bp  # Import the game blueprint
+from recreational_activities import recreational_activities_bp  # Import the recreational_activities blueprint
+from blogs import blogs_bp  # Import the blogs blueprint
 
 # Initialize Flask application
 app = Flask(__name__)
 
 # Secret key for session management
 app.secret_key = 'your_secret_key'
+
+# Register the blueprints
+app.register_blueprint(news_bp)
+app.register_blueprint(shop_bp)
+app.register_blueprint(data_analyzer_bp)
+app.register_blueprint(game_bp)
+app.register_blueprint(recreational_activities_bp)
+app.register_blueprint(blogs_bp)
+
+# Define the function to check if the profile picture exists
+def profile_picture_exists(filename):
+    return os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+app.jinja_env.globals.update(profile_picture_exists=profile_picture_exists)
+
+# Define the profile endpoint
+@app.route('/profile')
+def profile():
+    # Retrieve the username from the session
+    username = session.get('username')
+    profile_picture = session.get('profile_picture')
+    return render_template('profile.html', username=username, profile_picture=profile_picture)
 
 # Set session lifetime
 app.permanent_session_lifetime = timedelta(days=7)
@@ -21,14 +48,15 @@ app.permanent_session_lifetime = timedelta(days=7)
 DATABASE = 'final_project.db'
 
 # Upload folder
-UPLOAD_FOLDER = 'static/uploads'
+UPLOAD_FOLDER = os.path.join(app.static_folder, 'uploads/profile_pictures')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Allowed extensions for image upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def get_db():
     conn = sqlite3.connect(DATABASE)
@@ -60,37 +88,6 @@ def index():
     username = session.get('username')
     return render_template('index.html', username=username)
 
-@app.route('/news_list')
-def news_list():
-    # Fetch all articles from the database
-    articles = news.get_all_articles()
-    # Render the news_list.html template with the articles
-    return render_template('news_list.html', articles=articles)
-
-@app.route('/add_news', methods=['GET', 'POST'])
-@login_required
-def add_news():
-    if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
-        body = request.form['body']
-        image = request.files['image']
-        author = session.get('username')  # Get the author from the session
-        
-        if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        else:
-            filename = None
-        
-        # Save the article in the database using the news module
-        news.save_article(title, description, body, filename, author)
-        
-        flash('News article added successfully!', 'success')
-        return redirect(url_for('news_list'))
-    
-    return render_template('add_news.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -121,58 +118,13 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        email = request.form['email']
-        security_question = request.form['security_question']
-        security_answer = request.form['security_answer']
-        profile_picture = request.files['profile_picture']
-        
-        # Validate the input
-        errors = []
-        if not username:
-            errors.append("Username is required.")
-        if not password:
-            errors.append("Password is required.")
-        if password != confirm_password:
-            errors.append("Passwords do not match.")
-        if not email:
-            errors.append("Email is required.")
-        if not security_question:
-            errors.append("Security question is required.")
-        if not security_answer:
-            errors.append("Security answer is required.")
-        if profile_picture and not profile_picture.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-            errors.append("Invalid profile picture format. Only PNG, JPG, JPEG, and GIF are allowed.")
-        
-        # Check if username or email already exists
+        # Hash the password and save the user to the database
+        hashed_password = generate_password_hash(password, method='sha256')
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("SELECT * FROM users WHERE username = ? OR email = ?", (username, email))
-        existing_user = cursor.fetchone()
-        if existing_user:
-            errors.append("Username or email already exists.")
-        
-        if errors:
-            for error in errors:
-                flash(error, 'register_error')
-            return render_template('register.html')
-        
-        # Hash the password and security answer
-        hashed_password = generate_password_hash(password)
-        hashed_security_answer = generate_password_hash(security_answer)
-        
-        # Save the profile picture if provided
-        profile_picture_filename = None
-        if profile_picture:
-            profile_picture_filename = secure_filename(profile_picture.filename)
-            profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename))
-        
-        # Save the user information in the database
-        cursor.execute("INSERT INTO users (username, password, email, security_question, security_answer, profile_picture) VALUES (?, ?, ?, ?, ?, ?)",
-                       (username, hashed_password, email, security_question, hashed_security_answer, profile_picture_filename))
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
         db.commit()
-        
-        flash('Registration successful. Please log in.', 'register_success')
+        flash('Registration successful! Please log in.', 'register_success')
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -211,11 +163,6 @@ def forgot_password():
             else:
                 flash('Incorrect security answer. Please try again.', 'forgot_password_error')
     return render_template('forgot_password.html')
-
-@app.route('/shop')
-def shop():
-    # Render the shop.html template
-    return render_template('shop.html')
 
 @app.route('/settings')
 @login_required
@@ -261,39 +208,47 @@ def change_email():
         return redirect(url_for('settings'))
     return render_template('change_email.html')
 
-@app.route('/data_analyzer')
-def data_analyzer():
-    # Render the data_analyzer.html template
-    return render_template('data_analyzer.html')
-
-@app.route('/game')
-def game():
-    # Render the game.html template
-    games = [
-        {"title": "Game 1", "description": "Description for game 1"},
-        {"title": "Game 2", "description": "Description for game 2"}
-    ]
-    return render_template('game.html', games=games)
-
-@app.route('/recreational_activities')
-def recreational_activities():
-    # Render the recreational_activities.html template
-    return render_template('recreational_activities.html')
-
-@app.route('/blogs')
-def blogs():
-    # Render the blogs.html template
-    return render_template('blogs.html')
 
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('query')
-    # Add logic to handle the search query
-    return render_template('search_results.html', query=query)
+    if not query:
+        return redirect(url_for('index'))
+
+    # Perform search in different categories
+    news_results = news.search_articles(query)
+    shop_results = shop.search_products(query)
+    data_analyzer_results = data_analyzer.search_data(query)
+    game_results = game.search_games(query)
+    recreational_activities_results = recreational_activities.search_activities(query)
+    blog_results = blogs.search_blogs(query)
+
+    # Combine all results
+    results = news_results + shop_results + data_analyzer_results + game_results + recreational_activities_results + blog_results
+
+    return render_template('search_results.html', results=results)
+
+@app.route('/upload_profile_picture', methods=['POST'])
+def upload_profile_picture():
+    if 'profile_picture' not in request.files:
+        flash('No file part')
+        return redirect(url_for('profile'))
+    file = request.files['profile_picture']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(url_for('profile'))
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        session['profile_picture'] = filename
+        flash('Profile picture uploaded successfully')
+        return redirect(url_for('profile'))
+    else:
+        flash('File type not allowed')
+        return redirect(url_for('profile'))
 
 # Set session lifetime to 7 days
 app.permanent_session_lifetime = timedelta(days=7)
 
 if __name__ == '__main__':
-    news.init_db()  # Initialize the database
-    app.run(debug=True, port=5001)
+    app.run(debug=True)

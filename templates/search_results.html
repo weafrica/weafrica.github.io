@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Search Results</h1>
+    {% if results %}
+        <ul class="list-group">
+            {% for result in results %}
+                <li class="list-group-item">
+                    <h2>{{ result.title }}</h2>
+                    <p>{{ result.description }}</p>
+                    {% if result.type == 'news' %}
+                        <a href="{{ url_for('news_detail', news_id=result.id) }}" class="btn btn-primary">Read more</a>
+                    {% elif result.type == 'shop' %}
+                        <a href="{{ url_for('shop_detail', shop_id=result.id) }}" class="btn btn-primary">View Product</a>
+                    {% elif result.type == 'data_analyzer' %}
+                        <a href="{{ url_for('data_analyzer_detail', analyzer_id=result.id) }}" class="btn btn-primary">Analyze Data</a>
+                    {% elif result.type == 'game' %}
+                        <a href="{{ url_for('game_detail', game_id=result.id) }}" class="btn btn-primary">Play Game</a>
+                    {% elif result.type == 'recreational_activities' %}
+                        <a href="{{ url_for('recreational_activity_detail', activity_id=result.id) }}" class="btn btn-primary">View Activity</a>
+                    {% elif result.type == 'blogs' %}
+                        <a href="{{ url_for('blog_detail', blog_id=result.id) }}" class="btn btn-primary">Read Blog</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}
