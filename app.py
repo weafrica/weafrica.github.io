@@ -20,12 +20,12 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Register the blueprints
-app.register_blueprint(news_bp)
-app.register_blueprint(shop_bp)
-app.register_blueprint(data_analyzer_bp)
-app.register_blueprint(game_bp)
-app.register_blueprint(recreational_activities_bp)
-app.register_blueprint(blogs_bp)
+app.register_blueprint(news_bp, url_prefix='/news')
+app.register_blueprint(shop_bp, url_prefix='/shop')
+app.register_blueprint(data_analyzer_bp, url_prefix='/data_analyzer')
+app.register_blueprint(game_bp, url_prefix='/game')
+app.register_blueprint(recreational_activities_bp, url_prefix='/recreational_activities')
+app.register_blueprint(blogs_bp, url_prefix='/blogs')
 
 # Define the function to check if the profile picture exists
 def profile_picture_exists(filename):
@@ -63,6 +63,17 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with open('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+@app.before_request
+def initialize_database():
+    init_db()
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -98,14 +109,16 @@ def login():
         cursor = db.cursor()
         cursor.execute("SELECT password, profile_picture FROM users WHERE username = ?", (username,))
         user = cursor.fetchone()
-        if user and check_password_hash(user[0], password):
-            session['username'] = username
-            session['profile_picture'] = user[1]
-            print(f"Session data: {session}")  # Debug print
-            return redirect(url_for('index'))
-        else:
-            flash('Invalid username or password. Please try again.', 'login_error')
-            return redirect(url_for('login'))
+        if user:
+            hashed_password = user[0]
+            if check_password_hash(hashed_password, password):
+                session['username'] = username
+                session['profile_picture'] = user[1]
+                print(f"Session data: {session}")  # Debug print
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid username or password. Please try again.', 'login_error')
+                return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/logout', methods=['POST'])
@@ -119,7 +132,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         # Hash the password and save the user to the database
-        hashed_password = generate_password_hash(password, method='sha256')
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         db = get_db()
         cursor = db.cursor()
         cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))

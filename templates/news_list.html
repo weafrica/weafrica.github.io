@@ -30,27 +30,24 @@
         <p>No articles found.</p>
     {% endif %}
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/news_list.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const readMoreLinks = document.querySelectorAll('.read-more-link');
-        readMoreLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                const articleId = this.getAttribute('data-article-id');
-                const articleBody = document.getElementById('article-body-' + articleId);
-                if (articleBody.style.display === 'none' || articleBody.style.display === '') {
-                    articleBody.style.display = 'block';
-                    this.textContent = 'Read Less';
-                } else {
-                    articleBody.style.display = 'none';
-                    this.textContent = 'Read More';
-                }
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    const readMoreLinks = document.querySelectorAll('.read-more-link');
+    readMoreLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            const articleId = this.getAttribute('data-article-id');
+            const articleBody = document.getElementById('article-body-' + articleId);
+            if (articleBody.style.display === 'none') {
+                articleBody.style.display = 'block';
+                this.textContent = 'Read Less';
+            } else {
+                articleBody.style.display = 'none';
+                this.textContent = 'Read More';
+            }
         });
     });
+});
 </script>
 {% endblock %}

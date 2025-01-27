@@ -25,3 +25,28 @@ function getRandomColor() {
 
 // Apply random color to the WeAfrica icon
 document.getElementById('weafrica-icon').style.color = getRandomColor();
+
+$(document).ready(function() {
+    $('#search-input').on('input', function() {
+        let query = $(this).val();
+        if (query.length > 2) {
+            $.ajax({
+                url: "{{ url_for('news.search_autocomplete') }}",
+                method: 'GET',
+                data: { query: query },
+                success: function(data) {
+                    $('#search-results').empty();
+                    if (data.results.length > 0) {
+                        data.results.forEach(function(result) {
+                            if (result.id) {
+                                $('#search-results').append('<a href="' + "{{ url_for('news.news_detail', news_id='') }}" + result.id + '" class="list-group-item list-group-item-action">' + result.title + '</a>');
+                            }
+                        });
+                    } else {
+                        $('#search-results').append('<p class="list-group-item">No results found</p>');
+                    }
+                }
+            });
+        }
+    });
+});

@@ -1,17 +1,37 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
-from functools import wraps
-import recreational_activities  # Import the recreational_activities module
+# Import necessary modules from Flask and SQLite3
+from flask import Blueprint, render_template
+import sqlite3
 
+# Create a Blueprint for the recreational activities module
 recreational_activities_bp = Blueprint('recreational_activities', __name__)
 
-@recreational_activities_bp.route('/recreational_activities')
+# Define the path to the database
+DATABASE = 'final_project.db'
+
+# Function to get a database connection
+def get_db():
+    # Connect to the SQLite database
+    conn = sqlite3.connect(DATABASE)
+    # Set the row factory to sqlite3.Row to access columns by name
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# Route to display the list of recreational activities
+@recreational_activities_bp.route('/recreational_activities_list')
 def recreational_activities_list():
     # Fetch all recreational activities from the database
-    activities = recreational_activities.get_all_activities()
+    activities = get_all_activities()
+    # Render the recreational_activities_list.html template with the activities
     return render_template('recreational_activities_list.html', activities=activities)
 
-@recreational_activities_bp.route('/recreational_activity_detail/<int:activity_id>')
-def recreational_activity_detail(activity_id):
-    # Fetch the recreational activity from the database
-    activity = recreational_activities.get_activity(activity_id)
-    return render_template('recreational_activity_detail.html', activity=activity)
+# Function to fetch all recreational activities from the database
+def get_all_activities():
+    # Get a database connection
+    db = get_db()
+    # Create a cursor object
+    cursor = db.cursor()
+    # Execute the SQL query to select all activities
+    cursor.execute("SELECT * FROM activities")
+    # Fetch all rows from the executed query
+    activities = cursor.fetchall()
+    return activities
