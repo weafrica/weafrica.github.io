@@ -1,5 +1,5 @@
 # Import necessary modules from Flask and SQLite3
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, Flask
 import sqlite3
 
 # Create a Blueprint for the shop module
@@ -39,5 +39,83 @@ def get_all_products():
 @shop_bp.route('/shop_detail/<int:shop_id>')
 def shop_detail(shop_id):
     # Fetch the product from the database
-    product = shop.get_product(shop_id)
+    product = get_product(shop_id)
     return render_template('shop_detail.html', product=product)
+
+# Function to fetch a single product by ID from the database
+def get_product(shop_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM products WHERE id = ?", (shop_id,))
+    product = cursor.fetchone()
+    return product
+
+# Route to display the add product form
+@shop_bp.route('/add_product', methods=['GET', 'POST'])
+def add_product():
+    # Check if the user is logged in and the username is 'saulesto'
+    if 'username' in session and session['username'] == 'saulesto':
+        if request.method == 'POST':
+            # Get form data
+            name = request.form['name']
+            description = request.form['description']
+            price = request.form['price']
+            # Removed image_url field
+            
+            # Insert the new product into the database
+            insert_product(name, description, price)
+            
+            # Redirect to the shop list page
+            return redirect(url_for('shop.shop_list'))
+        
+        # Render the add_product.html template
+        return render_template('add_product.html')
+    else:
+        # Redirect to the shop list page if the user is not 'saulesto'
+        return redirect(url_for('shop.shop_list'))
+
+# Function to insert a new product into the database
+def insert_product(name, description, price):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO products (name, description, price) VALUES (?, ?, ?)",
+                   (name, description, price))
+    db.commit()
+
+app = Flask(__name__)
+
+# Sample product data
+products = [
+    {
+        'name': 'Product 1',
+        'description': 'Description of product 1.',
+        'price': 19.99,
+        'image_url': 'static/uploads/Angry_bird.jpg'
+    },
+    {
+        'name': 'Product 2',
+        'description': 'Description of product 2.',
+        'price': 29.99,
+        'image_url': 'static/uploads/Angry_bird.jpg'
+    },
+    {
+        'name': 'Product 3',
+        'description': 'Description of product 3.',
+        'price': 39.99,
+        'image_url': 'static/uploads/Angry_bird.jpg'
+    }
+]
+
+@app.route('/shop')
+def shop():
+    return render_template('shop.html', products=products)
+
+@app.route('/shop_list')
+def shop_list():
+    return render_template('shop_list.html', products=products)
+
+# Register the Blueprint with the Flask app
+app.register_blueprint(shop_bp)
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -51,6 +51,10 @@ DATABASE = 'final_project.db'
 UPLOAD_FOLDER = os.path.join(app.static_folder, 'uploads/profile_pictures')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Upload folder for product images
+PRODUCT_UPLOAD_FOLDER = os.path.join(app.static_folder, 'uploads')
+app.config['PRODUCT_UPLOAD_FOLDER'] = PRODUCT_UPLOAD_FOLDER
+
 # Allowed extensions for image upload
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
@@ -68,6 +72,9 @@ def init_db():
         db = get_db()
         with open('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
+        # Remove the redundant migration script execution
+        # with open('database/migrations/add_image_column.sql', mode='r') as f:
+        #     db.cursor().executescript(f.read())
         db.commit()
 
 @app.before_request
@@ -262,6 +269,61 @@ def upload_profile_picture():
 
 # Set session lifetime to 7 days
 app.permanent_session_lifetime = timedelta(days=7)
+
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/shop')
+def shop():
+    conn = get_db_connection()
+    products = conn.execute('SELECT id, name, description, price, image FROM products').fetchall()
+    conn.close()
+    return render_template('shop.html', products=products)
+
+@app.route('/product_list')
+def product_list():
+    search = request.args.get('search')
+    sort = request.args.get('sort', 'name')
+    conn = get_db_connection()
+    query = 'SELECT id, name, description, price, image FROM products WHERE name LIKE ? ORDER BY ' + sort
+    products = conn.execute(query, ('%' + search + '%',)).fetchall()
+    conn.close()
+    return render_template('product_list.html', products=products)
+
+@app.route('/add_product', methods=['GET', 'POST'])
+def add_product():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        image = request.files['image']
+        
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['PRODUCT_UPLOAD_FOLDER'], filename))
+            
+            conn = get_db_connection()
+            conn.execute('INSERT INTO products (name, description, price, image) VALUES (?, ?, ?, ?)',
+                         (name, description, price, filename))
+            conn.commit()
+            conn.close()
+            flash('Product added successfully!', 'success')
+            return redirect(url_for('shop'))
+        else:
+            flash('Invalid image file.', 'error')
+    
+    return render_template('add_product.html')
+
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    conn = get_db_connection()
+    product = conn.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
+    conn.close()
+    if product is None:
+        abort(404)
+    return render_template('product_detail.html', product=product)
 
 if __name__ == '__main__':
     app.run(debug=True)
