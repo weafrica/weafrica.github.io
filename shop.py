@@ -60,10 +60,10 @@ def add_product():
             name = request.form['name']
             description = request.form['description']
             price = request.form['price']
-            # Removed image_url field
+            image_url = request.form['image_url']  # Added image_url field
             
             # Insert the new product into the database
-            insert_product(name, description, price)
+            insert_product(name, description, price, image_url)
             
             # Redirect to the shop list page
             return redirect(url_for('shop.shop_list'))
@@ -75,11 +75,11 @@ def add_product():
         return redirect(url_for('shop.shop_list'))
 
 # Function to insert a new product into the database
-def insert_product(name, description, price):
+def insert_product(name, description, price, image_url):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO products (name, description, price) VALUES (?, ?, ?)",
-                   (name, description, price))
+    cursor.execute("INSERT INTO products (name, description, price, image_url) VALUES (?, ?, ?, ?)",
+                   (name, description, price, image_url))
     db.commit()
 
 app = Flask(__name__)
@@ -113,6 +113,13 @@ def shop():
 @app.route('/shop_list')
 def shop_list():
     return render_template('shop_list.html', products=products)
+
+@app.route('/printing')
+def printing():
+    # Fetch all products from the database
+    products = get_all_products()
+    # Render the printing.html template with the products
+    return render_template('printing.html', products=products)
 
 # Register the Blueprint with the Flask app
 app.register_blueprint(shop_bp)
