@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character set and viewport settings -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title block for dynamic page titles -->
+    <title>{% block title %}{% endblock %} - WeAfrica</title>
+    <!-- Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Header section with navigation bar -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top custom-header">
+        <!-- Brand logo and home link -->
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+            <i class="fas fa-home"></i> <!-- Home icon -->
+            WeAfrica
+        </a>
+        <!-- Toggler button for responsive navbar -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Search form -->
+            <form class="form-inline ml-auto" action="{{ url_for('search') }}" method="get">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" id="search-input">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <div id="search-results" class="list-group position-absolute" style="z-index: 1000;"></div>
+            </form>
+            <!-- User profile link if logged in -->
+            {% if 'username' in session %}
+                <div class="navbar-nav ml-auto d-flex align-items-center">
+                    <a class="nav-link d-flex align-items-center" href="{{ url_for('profile') }}">
+                        <div class="profile-picture-shade">
+                            <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ session['profile_picture']) }}" class="rounded-circle" alt="Profile Picture" style="width: 40px; height: 40px;">
+                        </div>
+                        <span class="ml-2">{{ session['username'] }}</span>
+                    </a>
+                </div>
+            {% endif %}
+            <!-- Shop link in the navbar -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('shop.shop_list') }}">
+                        <i class="fas fa-shopping-cart"></i> <!-- Shop icon -->
+                        Shop
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- Main container for page content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar navigation -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <!-- Dashboard link -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('index') }}">
+                                <i class="fas fa-home"></i> <!-- Home icon -->
+                                Dashboard
+                            </a>
+                        </li>
+                        <!-- News link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('news.news_list') }}">
+                                <i class="fas fa-newspaper"></i> <!-- News icon -->
+                                News
+                            </a>
+                        </li>
+                        <!-- Shop link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('shop.shop_list') }}">
+                                <i class="fas fa-shopping-cart"></i> <!-- Shop icon -->
+                                Shop
+                            </a>
+                        </li>
+
+
+                     
+
+
+                        <!-- Data Analyzer link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('data_analyzer.data_analyzer_list') }}">
+                                <i class="fas fa-chart-line"></i> <!-- Data Analyzer icon -->
+                                Data Analyzer
+                            </a>
+                        </li>
+                        <!-- Game link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('game.game_list') }}">
+                                <i class="fas fa-gamepad"></i> <!-- Game icon -->
+                                Game
+                            </a>
+                        </li>
+                        <!-- Recreational Activities link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('recreational_activities.recreational_activities_list') }}">
+                                <i class="fas fa-futbol"></i> <!-- Recreational Activities icon -->
+                                Recreational Activities
+                            </a>
+                        </li>
+                        <!-- Blogs link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('blogs.blogs_list') }}">
+                                <i class="fas fa-blog"></i> <!-- Blogs icon -->
+                                Blogs
+                            </a>
+                        </li>
+                        <!-- Conditional links for logged-in users -->
+                        {% if 'username' in session %}
+                            <!-- Settings link -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('settings') }}">
+                                    <i class="fas fa-cog"></i> <!-- Settings icon -->
+                                    Settings
+                                </a>
+                            </li>
+                            <!-- Profile link -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('profile') }}">
+                                    <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+                                    Profile
+                                </a>
+                            </li>
+                            <!-- Logout form -->
+                            <li class="nav-item">
+                                <form action="{{ url_for('logout') }}" method="post" class="form-inline">
+                                    <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt"></i> <!-- Logout icon --> Logout</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <!-- Login link for guests -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('login') }}">
+                                    <i class="fas fa-sign-in-alt"></i> <!-- Login icon -->
+                                    Login
+                                </a>
+                            </li>
+                        {% endif %}
+                        <!-- Conditional link for adding news if on news list page -->
+                        {% if user_is_on_news_list_page %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('news.add_news') }}">
+                                    <i class="fas fa-plus"></i> <!-- Add News icon -->
+                                    Add News
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if 'username' in session and session['username'] == 'saulesto' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('shop.add_product') }}">
+                                    <i class="fas fa-plus"></i> <!-- Add Product icon -->
+                                    Add Product
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <!-- Footer section -->
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container">
+            <span class="text-muted">&copy; 2023 WeAfrica. All rights reserved.</span>
+        </div>
+    </footer>
+    <!-- JavaScript files for Bootstrap and custom scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

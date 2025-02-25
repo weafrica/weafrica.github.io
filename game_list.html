@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Game List
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Game List</h1>
+    {% if games %}
+        <ul class="list-group">
+            {% for game in games %}
+                <li class="list-group-item">
+                    <h2>{{ game.name }}</h2>
+                    <p>{{ game.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No games found.</p>
+    {% endif %}
+</div>
+{% endblock %}
