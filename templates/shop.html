@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Shop</h2>
+    <p>Explore our exclusive collection of products.</p>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="GET" action="{{ url_for('shop') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search products..." name="search" value="{{ request.args.get('search', '') }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 text-right">
+            <form method="GET" action="{{ url_for('shop') }}">
+                <div class="form-group">
+                    <label for="sort">Sort by:</label>
+                    <select class="form-control" id="sort" name="sort" onchange="this.form.submit()">
+                        <option value="name" {% if request.args.get('sort') == 'name' %}selected{% endif %}>Name</option>
+                        <option value="price" {% if request.args.get('sort') == 'price' %}selected{% endif %}>Price</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="legumesCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% if products %}
+            {% for product in products %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="card mb-4 shadow-sm" style="background-color: #28a745; color: #fff;">
+                    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">${{ product.price }}</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Add to cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="carousel-item active">
+                <div class="card mb-4 shadow-sm" style="background-color: #28a745; color: #fff;">
+                    <div class="card-body">
+                        <p class="text-center">No products found.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <a class="carousel-control-prev" href="#legumesCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#legumesCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
